@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ArraySort
 {
@@ -7,7 +8,7 @@ namespace ArraySort
         public static void Main(string[] args)
         {
             var randomArray = new int[10000];
-            var randomNumbers = new Random(10000);
+            var randomNumbers = new Random(1);
             for (var i = 0; i < 10000; i++) randomArray[i] = randomNumbers.Next();
 
             var sorting = BobbleSort(randomArray);
@@ -22,6 +23,8 @@ namespace ArraySort
                 sorting.Insert);
             sorting = InsertionSort(randomArray);
             Console.WriteLine("Insertion: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
+            sorting = ListSort(randomArray);
+            Console.WriteLine("List: compare: {0}, insert: {1} ", sorting.Compare, sorting.Insert);
         }
 
         private static void PrintArray(int[] arr)
@@ -178,6 +181,36 @@ namespace ArraySort
 
             return sorting;
         }
+
+        private static Sorting ListSort(int[] mainArray)
+        {
+            var list = new List<int>();
+            var sorting = new Sorting
+            {
+                List = list
+            };
+            for (var i = 0; i < mainArray.Length; i++)
+            {
+                var index = 0;
+                for (var j = 0; j < list.Count; j++)
+                {
+                    sorting.Compare++;
+                    if (mainArray[i] > list[j])
+                    {
+                        index = j + 1;
+                        continue;
+                    }
+
+                    index = j;
+                    break;
+                }
+
+                sorting.Insert++;
+                list.Insert(index, mainArray[i]);
+            }
+
+            return sorting;
+        }
     }
 
     public class Sorting
@@ -185,6 +218,7 @@ namespace ArraySort
         public int[] Array;
         public int Compare;
         public int Insert;
+        public List<int> List;
         public int Move;
     }
 }
