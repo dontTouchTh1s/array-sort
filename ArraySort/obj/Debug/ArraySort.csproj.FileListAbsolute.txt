@@ -1,0 +1,6 @@
+C:\Users\alim2\RiderProjects\ArraySort\ArraySort\bin\Debug\ArraySort.exe
+C:\Users\alim2\RiderProjects\ArraySort\ArraySort\bin\Debug\ArraySort.pdb
+C:\Users\alim2\RiderProjects\ArraySort\ArraySort\obj\Debug\ArraySort.csproj.AssemblyReference.cache
+C:\Users\alim2\RiderProjects\ArraySort\ArraySort\obj\Debug\ArraySort.csproj.CoreCompileInputs.cache
+C:\Users\alim2\RiderProjects\ArraySort\ArraySort\obj\Debug\ArraySort.exe
+C:\Users\alim2\RiderProjects\ArraySort\ArraySort\obj\Debug\ArraySort.pdb
