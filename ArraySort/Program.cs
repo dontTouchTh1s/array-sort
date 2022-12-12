@@ -12,27 +12,29 @@ namespace ArraySort
             for (var i = 0; i < 10000; i++) randomArray[i] = randomNumbers.Next();
 
             var sorting = BobbleSort(randomArray);
-            Console.WriteLine("Bubble: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
+            Console.WriteLine("Bubble sort: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
 
             sorting = ControlledBobbleSort(randomArray);
-            Console.WriteLine("Controller bubble: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
-            sorting = ExchangeSort(randomArray);
-            Console.WriteLine("Exchange: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
-            sorting = MergeSort(randomArray);
-            Console.WriteLine("Merge: compare: {0}, move: {1}, Insert: {2}", sorting.Compare, sorting.Move,
-                sorting.Insert);
-            sorting = InsertionSort(randomArray);
-            Console.WriteLine("Insertion: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
-            sorting = ListSort(randomArray);
-            Console.WriteLine("List: compare: {0}, insert: {1} ", sorting.Compare, sorting.Insert);
-        }
+            Console.WriteLine("Controller bubble sort: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
 
-        private static void PrintArray(int[] arr)
-        {
-            var n = arr.Length;
-            for (var i = 0; i < n; ++i)
-                Console.Write(arr[i] + " ");
-            Console.WriteLine();
+            sorting = ExchangeSort(randomArray);
+            Console.WriteLine("Exchange sort: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
+
+            sorting = SelectionSort(randomArray);
+            Console.WriteLine("Selection sort: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
+
+            sorting = MergeSort(randomArray);
+            Console.WriteLine("Merge sort: compare: {0}, move: {1}, Insert: {2}", sorting.Compare, sorting.Move,
+                sorting.Insert);
+
+            sorting = InsertionSort(randomArray);
+            Console.WriteLine("Insertion sort: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
+
+            sorting = ListSort(randomArray);
+            Console.WriteLine("List sort: compare: {0}, insert: {1} ", sorting.Compare, sorting.Insert);
+
+            sorting = QuickSort(randomArray, 0, randomArray.Length - 1);
+            Console.WriteLine("Quick sort: compare: {0}, move: {1} ", sorting.Compare, sorting.Move);
         }
 
         private static Sorting BobbleSort(int[] mainArray)
@@ -54,7 +56,7 @@ namespace ArraySort
             return sorting;
         }
 
-        public static Sorting ControlledBobbleSort(int[] mainArray)
+        private static Sorting ControlledBobbleSort(int[] mainArray)
         {
             var array = new int[mainArray.Length];
             mainArray.CopyTo(array, 0);
@@ -79,7 +81,7 @@ namespace ArraySort
             return sorting;
         }
 
-        public static Sorting ExchangeSort(int[] mainArray)
+        private static Sorting ExchangeSort(int[] mainArray)
         {
             var array = new int[mainArray.Length];
             mainArray.CopyTo(array, 0);
@@ -98,7 +100,7 @@ namespace ArraySort
             return sorting;
         }
 
-        public static Sorting SelectionSort(int[] mainArray)
+        private static Sorting SelectionSort(int[] mainArray)
         {
             var array = new int[mainArray.Length];
             mainArray.CopyTo(array, 0);
@@ -121,29 +123,30 @@ namespace ArraySort
             return sorting;
         }
 
-        public static Sorting MergeSort(int[] mainArray)
+        private static Sorting MergeSort(int[] mainArray)
         {
+            if (mainArray.Length == 1) return new Sorting { Array = mainArray };
             var array01 = new int[mainArray.Length / 2];
-            var array02 = new int[mainArray.Length / 2];
+            var array02 = new int[mainArray.Length - array01.Length];
             var array = new int[mainArray.Length];
             for (var i = 0; i < mainArray.Length; i++)
-                if (i < mainArray.Length / 2)
+                if (i < array01.Length)
                     array01[i] = mainArray[i];
                 else
-                    array02[i - mainArray.Length / 2] = mainArray[i];
+                    array02[i - array01.Length] = mainArray[i];
             // Sort split array
             var sorting = new Sorting();
-            var a1 = SelectionSort(array01);
+            var a1 = MergeSort(array01);
             a1.Array.CopyTo(array01, 0);
             sorting.Compare = a1.Compare;
             sorting.Move = a1.Move;
-            var a2 = SelectionSort(array02);
+            var a2 = MergeSort(array02);
             a2.Array.CopyTo(array02, 0);
             sorting.Compare += a2.Compare;
             sorting.Move += a2.Move;
             var counter = 0;
-            for (var i = 0; i < array.Length / 2; i++)
-            for (var j = counter - i; j < array.Length / 2; j++)
+            for (var i = 0; i < array01.Length; i++)
+            for (var j = counter - i; j < array02.Length; j++)
             {
                 sorting.Compare++;
                 sorting.Insert++;
@@ -160,6 +163,7 @@ namespace ArraySort
                 if (counter == array.Length - 1) array[counter] = array01[i];
             }
 
+            sorting.Array = array;
             return sorting;
         }
 
@@ -209,6 +213,37 @@ namespace ArraySort
                 list.Insert(index, mainArray[i]);
             }
 
+            return sorting;
+        }
+
+        private static Sorting QuickSort(int[] mainArray, int leftIndex, int rightIndex)
+        {
+            var array = new int[mainArray.Length];
+            mainArray.CopyTo(array, 0);
+            var sorting = new Sorting();
+            var pivot = array[leftIndex];
+            var i = leftIndex;
+            var j = rightIndex;
+            while (i <= j)
+            {
+                sorting.Compare++;
+                while (array[i] < pivot) i++;
+                sorting.Compare++;
+                while (array[j] > pivot) j--;
+                if (i <= j)
+                {
+                    sorting.Move++;
+                    (array[i], array[j]) = (array[j], array[i]);
+                    i++;
+                    j--;
+                }
+            }
+
+            if (leftIndex < j)
+                QuickSort(array, leftIndex, j);
+            if (i < rightIndex)
+                QuickSort(array, i, rightIndex);
+            sorting.Array = array;
             return sorting;
         }
     }
